@@ -28,3 +28,6 @@ snail-core/.idea/
 snail-core/target/
 snail-treasure-chest/.idea/
 snail-treasure-chest/target/
+snail-sb-demo/.idea/
+snail-sb-demo/.mvn/
+snail-sb-demo/target/
