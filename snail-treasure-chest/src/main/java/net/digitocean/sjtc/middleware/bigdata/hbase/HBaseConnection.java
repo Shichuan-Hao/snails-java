@@ -85,14 +85,18 @@ public final class HBaseConnection {
                            String rowKey,
                            String columnFamily,
                            String column,
-                           String data) throws IOException {
+                           String data) {
 
         try (Table table = connection.getTable(tableName)) {
             Put put = new Put(Bytes.toBytes(rowKey));
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(data));
             table.put(put);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+
+
 
     /**
      * 获取配置
