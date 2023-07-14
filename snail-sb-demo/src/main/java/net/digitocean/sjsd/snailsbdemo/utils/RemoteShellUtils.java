@@ -8,6 +8,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
+import net.digitocean.sjsd.snailsbdemo.entity.SftpInfo;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,7 +23,7 @@ import java.util.Properties;
  * @date: 2023/7/12 11:58
  */
 @Slf4j
-public class SFTPChannel {
+public class RemoteShellUtils {
 
     private Session session = null;
     private Channel channel = null;
@@ -33,7 +34,7 @@ public class SFTPChannel {
     private final String password;
     private final int timeout;
 
-    public SFTPChannel(SftpInfo sftpInfo) {
+    public RemoteShellUtils(SftpInfo sftpInfo) {
         this.host = sftpInfo.getHost();
         this.port = sftpInfo.getPort();
         this.username = sftpInfo.getUsername();
@@ -42,7 +43,7 @@ public class SFTPChannel {
     }
 
     public void getSession() {
-        log.info("the sftp info. host:{}, port:{}, username:{}, password:{}", host, port, username, password);
+        log.info("the sftp info...host:{}, port:{}, username:{}, password:{}", host, port, username, password);
         // 创建 JSch 对象
         JSch jSch = new JSch();
         try {
@@ -97,6 +98,8 @@ public class SFTPChannel {
     }
 
     /**
+     * 将本地文件名为 src 的文件上传到目标服务器，目标文件名为 dist，
+     * 若 dst为目录，则目标文件名将与src文件名相同。
      * @param src  源文件绝对路径
      * @param dist 目标文件绝对路径
      */
@@ -153,6 +156,9 @@ public class SFTPChannel {
         }
     }
 
+    /**
+     * 关闭连接资源
+     */
     public void closeChannel() {
         if (channel != null) {
             channel.disconnect();
@@ -170,4 +176,15 @@ public class SFTPChannel {
     // rm(): 删除指定文件
     // mkdir(): 创建目录
     // rmdir(): 删除目录
+
+    public static void main(String[] args) {
+        SftpInfo sftpInfo = new SftpInfo();
+        sftpInfo.setHost("192.116.8.54");
+        sftpInfo.setPort(22);
+        sftpInfo.setUsername("root");
+        sftpInfo.setPassword("6YaUSW%7wS4");
+        sftpInfo.setTimeout(30000);
+        RemoteShellUtils remoteShellUtils = new RemoteShellUtils(sftpInfo);
+        remoteShellUtils.execShell("java -version");
+    }
 }

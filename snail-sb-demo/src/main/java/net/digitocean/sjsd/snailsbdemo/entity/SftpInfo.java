@@ -1,4 +1,4 @@
-package net.digitocean.sjsd.snailsbdemo.utils;
+package net.digitocean.sjsd.snailsbdemo.entity;
 
 import lombok.Data;
 
@@ -12,6 +12,5 @@ public class SftpInfo {
     private int port = 22;
     private String username;
     private String password;
-
     private int timeout;
 }
