@@ -1,4 +1,4 @@
-package net.digitocean.sjgf;
+package net.digitocean.sjgf.gs;
 
 /**
  * ${description}
