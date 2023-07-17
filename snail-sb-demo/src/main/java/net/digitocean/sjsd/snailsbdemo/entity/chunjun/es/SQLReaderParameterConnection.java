@@ -1,9 +1,7 @@
-package net.digitocean.sjsd.snailsbdemo.entity.chunjun.sql;
+package net.digitocean.sjsd.snailsbdemo.entity.chunjun.es;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,15 +10,13 @@ import java.util.List;
  * @date: 2023/7/13 11:22
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SQLReaderParameterConnection {
 
     /**
      * 描述：针对关系型数据库的 jdbc 连接字符串
      */
-    private List<String> jdbcUrl;
+    private String jdbcUrl;
 
     /**
      * 描述：表
@@ -29,7 +25,7 @@ public class SQLReaderParameterConnection {
 
 
     /**
-     * 描述：这个是干啥的还不清楚
+     * 描述：数据库schema名
      */
     private String schema;
 }

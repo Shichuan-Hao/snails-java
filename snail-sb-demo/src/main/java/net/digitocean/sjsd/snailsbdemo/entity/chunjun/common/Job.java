@@ -1,9 +1,7 @@
 package net.digitocean.sjsd.snailsbdemo.entity.chunjun.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -20,16 +18,14 @@ import java.util.List;
  * @date: 2023/7/13 11:21
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Job {
 
     /**
      * 配置任务的输入源与输出源
      * 包含 reader，writer
      */
-    List<JobContent> contents;
+    List<JobContent> content;
 
     /**
      * 配置任务整体的环境设定，

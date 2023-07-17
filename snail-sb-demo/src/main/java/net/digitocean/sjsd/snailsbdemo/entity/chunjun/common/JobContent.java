@@ -1,18 +1,14 @@
 package net.digitocean.sjsd.snailsbdemo.entity.chunjun.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author: haoshichuan
  * @date: 2023/7/13 11:22
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JobContent {
     /**
      * 用于配置数据的输入源，即数据从何而来

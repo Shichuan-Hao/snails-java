@@ -1,9 +1,7 @@
 package net.digitocean.sjsd.snailsbdemo.entity.chunjun.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 配置纯钧（chunjun）中定义的插件日志的保存与记录
@@ -12,9 +10,7 @@ import lombok.NoArgsConstructor;
  * @date: 2023/7/13 11:22
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JobSettingLog {
 
     /**
