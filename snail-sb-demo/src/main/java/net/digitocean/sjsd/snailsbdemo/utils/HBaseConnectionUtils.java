@@ -117,13 +117,13 @@ public final class HBaseConnectionUtils {
             throw new RuntimeException(e);
         }
 
-        String clientPort = (String) props.get("hbase.zookeeper.property.clientPort");
+        //String clientPort = (String) props.get("hbase.zookeeper.property.clientPort");
         String quorum = (String) props.get("hbase.zookeeper.quorum");
 
-        log.info("connect to zookeeper {}:{}", quorum, clientPort);
+        //log.info("connect to zookeeper {}:{}", quorum, clientPort);
 
         Configuration config = HBaseConfiguration.create();
-        config.set("hbase.zookeeper.property.clientPort", clientPort);
+        //config.set("hbase.zookeeper.property.clientPort", clientPort);
         config.set("hbase.zookeeper.quorum", quorum);
 
         return config;
@@ -133,6 +133,7 @@ public final class HBaseConnectionUtils {
         Connection connection = getConnection();
         Admin admin = connection.getAdmin();
         List<TableDescriptor> tableDescriptors = admin.listTableDescriptors();
+
 
         // 输出表的元数据
         for (TableDescriptor tableDescriptor : tableDescriptors) {

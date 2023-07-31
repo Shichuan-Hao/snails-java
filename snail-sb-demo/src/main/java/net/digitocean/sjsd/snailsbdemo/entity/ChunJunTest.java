@@ -32,9 +32,9 @@ public class ChunJunTest {
 
     static String TMP_DIR = "java.io.tmpdir";
     static String CONFIG_TMP_DIR = "/data/temp/chunjun/config/";
-    static String hbaseToGp() {
-        // hbase to greenplum
 
+    static void hbaseToGp(String localName) {
+        // hbase to greenplum
         // hbase reader
         Map<String, String> hbaseConfig = Maps.newHashMap();
         hbaseConfig.put("hbase.zookeeper.property.clientPort", "2188");
@@ -73,7 +73,8 @@ public class ChunJunTest {
         List<SQLReaderParameterConnection> gpConnections = Lists.newArrayList();
         SQLReaderParameterConnection gpConnection = new SQLReaderParameterConnection();
         gpConnection.setTable(gpTable);
-        gpConnection.setJdbcUrl("jdbc:postgresql://192.168.9.30:5436/postgres?useSSL=false");
+        //gpConnection.setJdbcUrl("jdbc:postgresql://192.168.9.30:5436/postgres?useSSL=false");
+        gpConnection.setJdbcUrl("jdbc:pivotal:greenplum://192.168.9.30:5436;DatabaseName=postgres");
         gpConnections.add(gpConnection);
 
         List<JobContentParameterColumn> gpColumns = Lists.newArrayList();
@@ -127,10 +128,8 @@ public class ChunJunTest {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // 将 JSON 字符串写入 JSON 文件
-            String localPathName = System.getProperty(TMP_DIR) + "hbase_to_greenplum_" + System.currentTimeMillis() + ".json";
-            objectMapper.writeValue(new File(localPathName), root);
-           log.info("\u001B[35mJSON 文件生成成功 ！\u001B[0m");
-            return localPathName;
+            objectMapper.writeValue(new File(localName), root);
+            log.info("\u001B[35mJSON 文件生成成功 ！\u001B[0m");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -138,32 +137,35 @@ public class ChunJunTest {
 
     public static void main(String[] args) throws IOException {
         // 生成文件
-        String localPathName = hbaseToGp();
-        System.out.println(localPathName);
-        //
+        String localJsonFileName = "hbase_to_greenplum_" + System.currentTimeMillis() + ".json";
+        String localJsonFilePath = System.getProperty(TMP_DIR) + localJsonFileName;
+        log.info("\u001B[35m本地地址：{}\u001B[0m", localJsonFilePath);
+        hbaseToGp(localJsonFilePath);
 
-
-        // 上传文件
-        //
-
-        //String remoteDir = CONFIG_TMP_DIR + "hsc.json";
-        //String chunJunBinStandalone = "sh /data/bigdata/chunjun/chunjun-dist/bin/chunjun-standalone.sh -job " + remoteDir;
-        //String chunJunBinLocal1 = "sh /data/chunjun/bin/chunjun-local.sh -job ";
-        ////sh bin/chunjun-local.sh  -job chunjun-examples/json/stream/stream.json
+        String hostUser = "root";
+        String host_30 = "192.168.9.30";
+        String password_30 = "%j*da^szp";
+        String host_116 = "192.168.8.116";
+        String password_116 = "3MKZ9Kq$PLW";
 
         SSHInfo sshInfo = new SSHInfo();
-        sshInfo.setHost("192.168.8.116");
+        sshInfo.setHost(host_30);
         sshInfo.setPort(22);
-        sshInfo.setUsername("root");
-        sshInfo.setPassword("3MKZ9Kq$PLW");
+        sshInfo.setUsername(hostUser);
+        sshInfo.setPassword(password_30);
         sshInfo.setTimeout(3000);
         SSHRemoteUtils.getInstance().getSession(sshInfo);
-        SSHRemoteUtils.getInstance().uploadFile("/data/temp/chunjun/config/hbase_to_greenplum.json", localPathName);
 
-        String chunJunBinStandalone = "sh /data/chunjun/bin/chunjun-local.sh -job " + "/data/temp/chunjun/config/hbase_to_greenplum.json";
-        //String chunJunBinLocal2 = "docker logs -f --tail 100 246";
-        log.info("remote command: {}", chunJunBinStandalone);
-        SSHRemoteUtils.getInstance().execCommand(chunJunBinStandalone);
+        String remoteChunJunJsonPath = "/data/temp/chunjun/config/" + localJsonFileName;
+        SSHRemoteUtils.getInstance().uploadFile(remoteChunJunJsonPath, localJsonFilePath);
+
+        String chunJunRemotePath = "/data/bigdata/chunjun/chunjun-dist/bin/chunjun-standalone.sh";
+        String chunjunCommand = String.format("sh %s -job %s", chunJunRemotePath, remoteChunJunJsonPath);
+
+        // String chunJunBinStandalone = "sh /data/chunjun/bin/chunjun-local.sh -job " + "/data/temp/chunjun/config/hbase_to_greenplum.json";
+        // String chunJunBinLocal2 = "docker logs -f --tail 100 246";
+        log.info("\u001B[35mremote command: {}\u001B[0m", chunjunCommand);
+        SSHRemoteUtils.getInstance().execCommand(chunjunCommand);
         SSHRemoteUtils.getInstance().closeSession();
     }
 }

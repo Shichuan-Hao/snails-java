@@ -188,7 +188,7 @@ public class SSHRemoteUtils {
             String result = "";
             while ((result = br.readLine()) != null) {
                 sb.append("\n").append(result);
-                System.out.println(sb);
+                System.out.println(result);
             }
         } catch (Exception e) {
             log.error("获取数据流失败，失败原因：{}", e.getMessage());
@@ -208,19 +208,20 @@ public class SSHRemoteUtils {
     public static void main(String[] args) throws IOException {
         // 1、首先远程连接ssh
         SSHInfo sshInfo = new SSHInfo();
-        sshInfo.setHost("192.168.8.54");
+        sshInfo.setHost("192.168.9.30");
         sshInfo.setPort(22);
         sshInfo.setUsername("root");
-        sshInfo.setPassword("6YaUSW%7wS4");
+        sshInfo.setPassword("%j*da^szp");
         sshInfo.setTimeout(3000);
         SSHRemoteUtils.getInstance().getSession(sshInfo);
 
         // 2. 执行命令
-        String command1 = "ls -l";
-        String command2 = "java -version";
-        String command3 = "df -lh";
-        String command4 = "java";
-        String command5 = "sh hello.sh";
+        //String command1 = "ls -l";
+        //String command2 = "java -version";
+        //String command3 = "df -lh";
+        //String command4 = "java";
+        //String command5 = "cat /etc/profile";
+        String command5 = "echo $FLINK_HOME";
         SSHRemoteUtils.getInstance().execCommand(command5);
         SSHRemoteUtils.getInstance().closeSession();
     }
